@@ -4,6 +4,7 @@ import com.tw.apistackbase.model.Company;
 import com.tw.apistackbase.model.Employee;
 import com.tw.apistackbase.repository.CompanyRepository;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,16 @@ public class CompanyControllerTest {
     @MockBean
     private CompanyRepository mockCompanyRepository;
 
+    private List<Company> mockCompanies;
+
+//    @BeforeEach
+//    void setUpData() {
+//        mockCompanies = new ArrayList<>();
+//        List<Employee> employees = new ArrayList<>();
+//        employees.add(new Employee(10002, "Test", 15, "male", 6000));
+//        mockCompanies.add(new Company(1111, "OOCL", employees, 1));
+//    }
+
     @Test
     public void should_return_companies_when_request_all_companies_api() throws Exception {
         List<Company> mockCompanies= new ArrayList<>();
@@ -59,5 +70,21 @@ public class CompanyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"companyId\":123,\"companyName\":\"OOCL\",\"employees\":[{\"id\":10002,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}],\"employeeNumber\":1}"));
     }
+
+    @Test
+    public void should_return_employees_of_company_id_is_123_when_request_companies_with_certain_company_id_api() throws Exception {
+        List<Company> mockCompanies= new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(10002, "Test", 15, "male", 6000));
+        mockCompanies.add(new Company(123, "OOCL", employees, employees.size()));
+        Mockito.when(mockCompanyRepository.getCompanies()).thenReturn(mockCompanies);
+
+        mockMvc.perform(get("/companies/123/employees"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"id\":10002,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}]"));
+    }
+
+
 
 }

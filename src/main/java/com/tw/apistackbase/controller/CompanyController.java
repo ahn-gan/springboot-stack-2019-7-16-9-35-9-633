@@ -32,4 +32,14 @@ public class CompanyController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/companies/{companyId}/employees")
+    public ResponseEntity findEmployeesByCompanyId(@PathVariable(name = "companyId") long companyId) {
+        companies = companyRepository.getCompanies();
+        if (!companies.isEmpty()) {
+            Company searchCompany = companies.stream().filter(v -> v.getCompanyId() == companyId).findFirst().orElse(null);
+            return ResponseEntity.ok(searchCompany.getEmployees());
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
