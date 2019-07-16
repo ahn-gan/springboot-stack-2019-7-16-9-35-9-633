@@ -33,7 +33,7 @@ public class CompanyControllerTest {
     @MockBean
     private CompanyRepository mockCompanyRepository;
 
-    private List<Company> mockCompanies;
+//    private List<Company> mockCompanies;
 
 //    @BeforeEach
 //    void setUpData() {
@@ -85,6 +85,19 @@ public class CompanyControllerTest {
                 .andExpect(content().json("[{\"id\":10002,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}]"));
     }
 
+    @Test
+    public void should_return_companies_when_request_companies_for_pageable_api() throws Exception {
+        List<Company> mockCompanies= new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(10002, "Test", 15, "male", 6000));
+        mockCompanies.add(new Company(1111, "OOCL", employees, 1));
+        Mockito.when(mockCompanyRepository.getCompanies()).thenReturn(mockCompanies);
+
+        mockMvc.perform(get("/companies?page=1&pageSize=1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"companyId\":1111,\"companyName\":\"OOCL\",\"employees\":[{\"id\":10002,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}],\"employeeNumber\":1}]"));
+    }
 
 
 }

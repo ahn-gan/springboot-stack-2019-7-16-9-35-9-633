@@ -16,7 +16,13 @@ public class CompanyRepository {
         this.companies = new ArrayList<>();
         List<Employee> employees = new ArrayList<>();
         employees.add(new Employee(10001, "Test", 15, "male", 6000));
-        companies.add(new Company(1111, "OOCL", employees, employees.size()));
+        companies.add(new Company(1111, "OOCL",employees, employees.size()));
+        List<Employee> employees2 = new ArrayList<>();
+        employees2.add(new Employee(10002, "Test02", 15, "male", 7000));
+        companies.add(new Company(1111, "tencent", employees2, employees.size()));
+        List<Employee> employees3 = new ArrayList<>();
+        employees3.add(new Employee(10003, "Test03", 15, "male", 8000));
+        companies.add(new Company(1111, "baidu", employees3, employees.size()));
     }
 
     public List<Company> getCompanies() {

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,8 +20,9 @@ public class CompanyController {
     private List<Company> companies;
 
     @GetMapping("/companies")
-    public ResponseEntity getCompanies() {
-        return ResponseEntity.ok(companyRepository.getCompanies());
+    public ResponseEntity getCompanies(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "pageSize", defaultValue = "0") int pageSize) {
+        List<Company> companies = companyRepository.getCompanies();
+        return (page == 0 && pageSize == 0 || pageSize > companies.size()) ? ResponseEntity.ok(companyRepository.getCompanies()) : ResponseEntity.ok(companies.subList(page - 1, pageSize));
     }
 
     @GetMapping("/companies/{companyId}")
@@ -42,4 +44,5 @@ public class CompanyController {
         }
         return ResponseEntity.notFound().build();
     }
+
 }
