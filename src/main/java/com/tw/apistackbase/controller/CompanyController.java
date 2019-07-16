@@ -4,10 +4,7 @@ import com.tw.apistackbase.model.Company;
 import com.tw.apistackbase.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,6 +40,14 @@ public class CompanyController {
             return ResponseEntity.ok(searchCompany.getEmployees());
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/companies")
+    public ResponseEntity createCompany (@RequestBody Company company) {
+        companies = companyRepository.getCompanies();
+        company.setCompanyId(companies.stream().mapToLong(Company::getCompanyId).max().getAsLong() + 1);
+        companies.add(company);
+        return ResponseEntity.ok(company);
     }
 
 }

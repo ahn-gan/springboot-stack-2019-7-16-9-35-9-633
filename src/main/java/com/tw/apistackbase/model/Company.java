@@ -1,5 +1,6 @@
 package com.tw.apistackbase.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Company {
@@ -17,6 +18,12 @@ public class Company {
 
     public Company(long companyId, String companyName, List<Employee> employees, int employeeNumber) {
         this.companyId = companyId;
+        this.companyName = companyName;
+        this.employees = employees;
+        this.employeeNumber = employeeNumber;
+    }
+
+    public Company(String companyName,List<Employee> employees, int employeeNumber) {
         this.companyName = companyName;
         this.employees = employees;
         this.employeeNumber = employeeNumber;
@@ -52,5 +59,15 @@ public class Company {
 
     public void setEmployeeNumber(int employeeNumber) {
         this.employeeNumber = employeeNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "companyId=" + companyId +
+                ", companyName='" + companyName + '\'' +
+                ", employees=" + employees +
+                ", employeeNumber=" + employeeNumber +
+                '}';
     }
 }
