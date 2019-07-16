@@ -37,14 +37,27 @@ public class CompanyControllerTest {
         List<Company> mockCompanies= new ArrayList<>();
         List<Employee> employees = new ArrayList<>();
         employees.add(new Employee(10002, "Test", 15, "male", 6000));
-        mockCompanies.add(new Company("OOCL", employees, 1));
+        mockCompanies.add(new Company(1111, "OOCL", employees, 1));
         Mockito.when(mockCompanyRepository.getCompanies()).thenReturn(mockCompanies);
 
         mockMvc.perform(get("/companies"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"companyName\":\"OOCL\",\"employees\":[{\"id\":10002,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}],\"employeeNumber\":1}]"));
+                .andExpect(content().json("[{\"companyId\":1111,\"companyName\":\"OOCL\",\"employees\":[{\"id\":10002,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}],\"employeeNumber\":1}]"));
+    }
 
+    @Test
+    public void should_return_companies_which_company_id_is_123_when_request_companies_with_id_api() throws Exception {
+        List<Company> mockCompanies= new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(10002, "Test", 15, "male", 6000));
+        mockCompanies.add(new Company(123, "OOCL", employees, employees.size()));
+        Mockito.when(mockCompanyRepository.getCompanies()).thenReturn(mockCompanies);
+
+        mockMvc.perform(get("/companies/123"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"companyId\":123,\"companyName\":\"OOCL\",\"employees\":[{\"id\":10002,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}],\"employeeNumber\":1}"));
     }
 
 }
