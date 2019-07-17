@@ -13,12 +13,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+//import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -130,6 +133,46 @@ public class CompanyControllerTest {
                         "    \"employees\": [\n" +
                         "        {\n" +
                         "            \"id\": 10004,\n" +
+                        "            \"name\": \"Test04\",\n" +
+                        "            \"age\": 15,\n" +
+                        "            \"gender\": \"male\"\n" +
+                        "        }\n" +
+                        "    ],\n" +
+                        "    \"employeeNumber\": 1\n" +
+                        "}"));
+    }
+
+    @Test
+    public void should_return_updated_company_when_request_update_company_api() throws Exception {
+        List<Company> mockCompanies= new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(10002, "Test", 15, "male", 6000));
+        mockCompanies.add(new Company(1111, "OOCL", employees, 1));
+        Mockito.when(mockCompanyRepository.getCompanies()).thenReturn(mockCompanies);
+
+        mockMvc.perform(put("/companies/1111")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("{\n" +
+                        "    \"companyId\": 1111,\n" +
+                        "    \"companyName\": \"OOTESTUPDATE\",\n" +
+                        "    \"employees\": [\n" +
+                        "        {\n" +
+                        "            \"id\": 1002,\n" +
+                        "            \"name\": \"Test04\",\n" +
+                        "            \"age\": 15,\n" +
+                        "            \"gender\": \"male\"\n" +
+                        "        }\n" +
+                        "    ],\n" +
+                        "    \"employeeNumber\": 1\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\n" +
+                        "    \"companyId\": 1111,\n" +
+                        "    \"companyName\": \"OOTESTUPDATE\",\n" +
+                        "    \"employees\": [\n" +
+                        "        {\n" +
+                        "            \"id\": 1002,\n" +
                         "            \"name\": \"Test04\",\n" +
                         "            \"age\": 15,\n" +
                         "            \"gender\": \"male\"\n" +

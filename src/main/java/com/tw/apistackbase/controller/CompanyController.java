@@ -2,6 +2,7 @@ package com.tw.apistackbase.controller;
 
 import com.tw.apistackbase.model.Company;
 import com.tw.apistackbase.repository.CompanyRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,11 +44,22 @@ public class CompanyController {
     }
 
     @PostMapping("/companies")
-    public ResponseEntity createCompany (@RequestBody Company company) {
+    public ResponseEntity createCompany(@RequestBody Company company) {
         companies = companyRepository.getCompanies();
         company.setCompanyId(companies.stream().mapToLong(Company::getCompanyId).max().getAsLong() + 1);
         companies.add(company);
         return ResponseEntity.ok(company);
+    }
+
+    @PutMapping("/companies/{companyId}")
+    public ResponseEntity updateEmployee(@PathVariable(name = "companyId") long companyId, @RequestBody Company company) {
+        companies = companyRepository.getCompanies();
+        Company targetCompany = companies.stream().filter(v -> v.getCompanyId() == companyId).findFirst().orElse(null);
+        if (targetCompany != null) {
+            BeanUtils.copyProperties(company, targetCompany);
+            return ResponseEntity.ok(targetCompany);
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }
