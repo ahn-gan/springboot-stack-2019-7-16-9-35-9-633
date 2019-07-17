@@ -13,18 +13,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -180,5 +175,21 @@ public class CompanyControllerTest {
                         "    ],\n" +
                         "    \"employeeNumber\": 1\n" +
                         "}"));
+    }
+
+    @Test
+    public void should_return_the_delete_company_when_request_delete_company_api() throws Exception {
+        List<Company> mockCompanies= new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(10002, "Test", 15, "male", 6000));
+        mockCompanies.add(new Company(1111, "OOCL", employees, 1));
+        Mockito.when(mockCompanyRepository.getCompanies()).thenReturn(mockCompanies);
+
+        mockMvc.perform(delete("/companies/1111")
+        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+//                .andExpect(content().json("{\"companyId\":1111,\"companyName\":\"OOCL\",\"employees\":[{\"id\":10002,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}],\"employeeNumber\":1}"));
+                .andExpect(jsonPath("$.companyName").value("OOCL"));
     }
 }

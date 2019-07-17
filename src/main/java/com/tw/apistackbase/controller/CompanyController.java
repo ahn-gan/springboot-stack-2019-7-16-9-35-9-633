@@ -52,7 +52,7 @@ public class CompanyController {
     }
 
     @PutMapping("/companies/{companyId}")
-    public ResponseEntity updateEmployee(@PathVariable(name = "companyId") long companyId, @RequestBody Company company) {
+    public ResponseEntity updateCompany(@PathVariable(name = "companyId") long companyId, @RequestBody Company company) {
         companies = companyRepository.getCompanies();
         Company targetCompany = companies.stream().filter(v -> v.getCompanyId() == companyId).findFirst().orElse(null);
         if (targetCompany != null) {
@@ -62,4 +62,14 @@ public class CompanyController {
         return ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/companies/{companyId}")
+    public ResponseEntity deleteCompany(@PathVariable(name = "companyId") long companyId) {
+        companies = companyRepository.getCompanies();
+        Company targetCompany = companies.stream().filter(v -> v.getCompanyId() == companyId).findFirst().orElse(null);
+        if (targetCompany != null) {
+            companies.remove(targetCompany);
+            return ResponseEntity.ok(targetCompany);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
