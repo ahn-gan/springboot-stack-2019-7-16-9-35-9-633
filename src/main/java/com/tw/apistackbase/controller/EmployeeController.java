@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +49,17 @@ public class EmployeeController {
         Employee targetEmployee = employees.stream().filter(v -> v.getId() == employeeId).findFirst().orElse(null);
         if (targetEmployee != null) {
             BeanUtils.copyProperties(employee, targetEmployee, "id");
+            return ResponseEntity.ok(targetEmployee);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/employees/{employeeId}")
+    public ResponseEntity deleteCompany(@PathVariable(name = "employeeId") long employeeId) {
+        employees = employeeRepository.getEmployees();
+        Employee targetEmployee = employees.stream().filter(v -> v.getId() == employeeId).findFirst().orElse(null);
+        if (targetEmployee != null) {
+            employees.remove(targetEmployee);
             return ResponseEntity.ok(targetEmployee);
         }
         return ResponseEntity.notFound().build();
