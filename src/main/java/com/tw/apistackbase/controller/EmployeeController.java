@@ -44,13 +44,14 @@ public class EmployeeController {
         return ResponseEntity.ok(employees);
     }
 
-//    @PutMapping("/employees/{employeeId}")
-//    public ResponseEntity updateEmployee(@PathVariable(name = "employeeId") long employeeId, @RequestBody Employee employee) {
-//        Employee targetEmployee = employees.stream().filter(v -> v.getId() == employeeId).findFirst().orElse(null);
-//        if (targetEmployee != null) {
-//            BeanUtils.copyProperties(employee, targetEmployee);
-//            return ResponseEntity.ok(employees);
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
+    @PutMapping("/employees/{employeeId}")
+    public ResponseEntity updateEmployee(@PathVariable(name = "employeeId") long employeeId, @RequestBody Employee employee) {
+        employees = employeeRepository.getEmployees();
+        Employee targetEmployee = employees.stream().filter(v -> v.getId() == employeeId).findFirst().orElse(null);
+        if (targetEmployee != null) {
+            BeanUtils.copyProperties(employee, targetEmployee, "id");
+            return ResponseEntity.ok(targetEmployee);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

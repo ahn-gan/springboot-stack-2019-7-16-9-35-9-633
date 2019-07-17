@@ -16,8 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -102,6 +101,24 @@ public class EmployeeControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10002));
+    }
 
+    @Test
+    public void should_return_employee_with_update_name_when_request_to_update_employee_by_id_api() throws Exception {
+        List<Employee> mockEmployeeList = new ArrayList<>();
+        mockEmployeeList.add(new Employee(10001, "Test", 15, "male", 6000));
+        Mockito.when(mockEmployeeRepository.getEmployees()).thenReturn(mockEmployeeList);
+
+        mockMvc.perform(put("/employees/10001")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("    {\n" +
+                        "        \"name\": \"Test-put-name\",\n" +
+                        "        \"age\": 15,\n" +
+                        "        \"gender\": \"male\",\n" +
+                        "        \"salary\": 6000\n" +
+                        "    }"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Test-put-name"));
     }
 }
