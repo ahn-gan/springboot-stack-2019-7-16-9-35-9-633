@@ -19,12 +19,13 @@ public class EmployeeController {
 
     private List<Employee> employees;
 
-//    @PostMapping("/employees")
-//    public ResponseEntity createEmployee (@RequestBody Employee employee) {
-//        employees = employeeRepository.getEmployees();
-//        employees.add(employee);
-//        return ResponseEntity.ok(employees);
-//    }
+    @PostMapping("/employees")
+    public ResponseEntity createEmployee (@RequestBody Employee employee) {
+        employees = employeeRepository.getEmployees();
+        employee.setId(employees.stream().mapToLong(Employee::getId).max().getAsLong() + 1);
+        employees.add(employee);
+        return ResponseEntity.ok(employee);
+    }
 
     @GetMapping("/employees/{employeeId}")
     public ResponseEntity findEmployeeById(@PathVariable(name = "employeeId") long employeeId) {
