@@ -17,41 +17,40 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EmployeeControllerTest {
 
-//    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @MockBean
-//    private EmployeeRepository mockEmployeeRepository;
-//
-//    @Test
-//    public void should_return_employees_when_request_all_employees_api() throws Exception {
-//        List<Employee> mockEmployeeList = new ArrayList<>();
-//        mockEmployeeList.add(new Employee(10001, "Test", 15, "male", 6000));
-//        Mockito.when(mockEmployeeRepository.getEmployees()).thenReturn(mockEmployeeList);
-//
-//        mockMvc.perform(get("/employees"))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().json("[{\"id\":10001,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}]"));
-//    }
+    @Autowired
+    private MockMvc mockMvc;
 
-//    @Test
-//    public void should_return_employee_whose_id_is_1_when_request_all_employees_api() throws Exception {
-//        List<Employee> mockEmployeeList = new ArrayList<>();
-//        mockEmployeeList.add(new Employee(10001, "Test", 15, "male", 6000));
-//        Mockito.when(mockEmployeeRepository.getEmployees()).thenReturn(mockEmployeeList);
-//
-//        mockMvc.perform(get("/employees"))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().json("[{\"id\":10001,\"name\":\"Test\",\"age\":15,\"gender\":\"male\"}]"));
-//    }
+    @MockBean
+    private EmployeeRepository mockEmployeeRepository;
+
+    @Test
+    public void should_return_employees_when_request_all_employees_api() throws Exception {
+        List<Employee> mockEmployeeList = new ArrayList<>();
+        mockEmployeeList.add(new Employee(10001, "Test", 15, "male", 6000));
+        Mockito.when(mockEmployeeRepository.getEmployees()).thenReturn(mockEmployeeList);
+
+        mockMvc.perform(get("/employees"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].id").value(10001));
+    }
+
+    @Test
+    public void should_return_employee_whose_id_is_1_when_request_all_employees_api() throws Exception {
+        List<Employee> mockEmployeeList = new ArrayList<>();
+        mockEmployeeList.add(new Employee(10001, "Test", 15, "male", 6000));
+        Mockito.when(mockEmployeeRepository.getEmployees()).thenReturn(mockEmployeeList);
+
+        mockMvc.perform(get("/employees/10001"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10001));
+    }
 }
