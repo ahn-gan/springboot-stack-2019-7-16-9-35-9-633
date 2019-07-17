@@ -53,4 +53,19 @@ public class EmployeeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10001));
     }
+
+    @Test
+    public void should_return_employees_when_request_employees_pageable_api() throws Exception {
+        List<Employee> mockEmployeeList = new ArrayList<>();
+        mockEmployeeList.add(new Employee(10001, "Test", 15, "male", 6000));
+        mockEmployeeList.add(new Employee(10002, "Test2", 17, "female", 7000));
+        mockEmployeeList.add(new Employee(10003, "Test3", 19, "male", 8000));
+        Mockito.when(mockEmployeeRepository.getEmployees()).thenReturn(mockEmployeeList);
+
+        mockMvc.perform(get("/employees?page=2&pageSize=3"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].id").value(10002))
+                .andExpect(jsonPath("$.[1].id").value(10003));
+    }
 }
